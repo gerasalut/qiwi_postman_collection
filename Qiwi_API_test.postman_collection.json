@@ -1,0 +1,834 @@
+{
+	"info": {
+		"_postman_id": "df28fe54-dfa5-4336-8f21-bb126057ad24",
+		"name": "Qiwi_API_test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34870984"
+	},
+	"item": [
+		{
+			"name": "AccessService",
+			"item": [
+				{
+					"name": "Показать привязанные карты/счета",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Ответ содержит обязательные параметры счета\", function () {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    \r",
+									"    // предполагаем, что ответ - это массив счетов\r",
+									"    pm.expect(jsonData).to.be.an(\"array\").that.is.not.empty;\r",
+									"\r",
+									"    let account = jsonData[0]; // проверим первый элемент\r",
+									"\r",
+									"    pm.expect(account).to.have.property(\"accountId\");\r",
+									"    pm.expect(account).to.have.property(\"maskedPan\");\r",
+									"    pm.expect(account).to.have.property(\"cardType\");\r",
+									"    pm.expect(account).to.have.property(\"cardProduct\");\r",
+									"    pm.expect(account).to.have.property(\"issuerBank\");\r",
+									"    pm.expect(account).to.have.property(\"currency\");\r",
+									"    pm.expect(account).to.have.property(\"status\");\r",
+									"    pm.expect(account).to.have.property(\"balance\");\r",
+									"    pm.expect(account.balance).to.have.property(\"value\");\r",
+									"    pm.expect(account.balance).to.have.property(\"currency\");\r",
+									"    pm.expect(account).to.have.property(\"availableBalance\");\r",
+									"    pm.expect(account.availableBalance).to.have.property(\"value\");\r",
+									"    pm.expect(account.availableBalance).to.have.property(\"currency\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/accounts/500400333",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"accounts",
+								"500400333"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Запрос несуществующего аккаунта",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Проверка что статус код ответа 4хх\r",
+									"pm.test(\"Статус код 400 или 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/accounts/000000000",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"accounts",
+								"000000000"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GetBalance",
+			"item": [
+				{
+					"name": "Запрос баланса",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"//Проверка что баланс больше нуля\r",
+									"pm.test(\"Значение available.value больше 0\", function () {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    let value = parseFloat(jsonData.available.value);\r",
+									"    pm.expect(value).to.be.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/v1/agents/acme/points/00100/balance",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"00100",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Баланс равен нулю",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"//Проверка что баланс равен нулю\r",
+									"pm.test(\"Значение available.value равно 0\", function () {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    let value = parseFloat(jsonData.available.value);\r",
+									"    pm.expect(value).to.eql(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/v1/agents/acme/points/00100/balance",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"00100",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CreatePayment",
+			"item": [
+				{
+					"name": "Успешная заявка на платеж СБП",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"recipientDetails\": {\r\n  \"providerCode\": \"sbp-b2c\",\r\n  \"fields\": {\r\n    \"account\": \"79098087755\",\r\n    \"bankId\": \"100000000001\"\r\n  }\r\n},\r\n  \"amount\": {\r\n    \"value\": \"1.00\",\r\n    \"currency\": \"RUB\"\r\n  },\r\n  \"source\": {\r\n    \"paymentType\": \"NO_EXTRA_CHARGE\",\r\n    \"paymentToolType\": \"BANK_ACCOUNT\",\r\n    \"paymentTerminalType\": \"INTERNET_BANKING\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/payout/v1/agents/acme/points/00100/payments/b100-00100-b200",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"payout",
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"00100",
+								"payments",
+								"b100-00100-b200"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Некорректный/несуществующий pointId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Проверка что статус код ответа 4хх\r",
+									"pm.test(\"Статус код 400 или 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);\r",
+									"});\r",
+									"//Проверка что в ответе errorCode = payout.point.not-found\r",
+									"const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.have.property('errorCode', 'payout.point.not-found');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"recipientDetails\": {\r\n  \"providerCode\": \"sbp-b2c\",\r\n  \"fields\": {\r\n    \"account\": \"79098087755\",\r\n    \"bankId\": \"100000000001\"\r\n  }\r\n},\r\n  \"amount\": {\r\n    \"value\": \"120.00\",\r\n    \"currency\": \"RUB\"\r\n  },\r\n  \"source\": {\r\n    \"paymentType\": \"NO_EXTRA_CHARGE\",\r\n    \"paymentToolType\": \"BANK_ACCOUNT\",\r\n    \"paymentTerminalType\": \"INTERNET_BANKING\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/payout/v1/agents/acme/points/000/payments/b100-00100-b200",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"payout",
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"000",
+								"payments",
+								"b100-00100-b200"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Некорректный/несуществующий paymentId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Проверка что статус код ответа 4хх\r",
+									"pm.test(\"Статус код 400 или 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);\r",
+									"});\r",
+									"//Проверка что в ответе errorCode = payout.payment.not-found\r",
+									"const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.have.property('errorCode', 'payout.payment.not-found');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"recipientDetails\": {\r\n  \"providerCode\": \"sbp-b2c\",\r\n  \"fields\": {\r\n    \"account\": \"79098087755\",\r\n    \"bankId\": \"100000000001\"\r\n  }\r\n},\r\n  \"amount\": {\r\n    \"value\": \"120.00\",\r\n    \"currency\": \"RUB\"\r\n  },\r\n  \"source\": {\r\n    \"paymentType\": \"NO_EXTRA_CHARGE\",\r\n    \"paymentToolType\": \"BANK_ACCOUNT\",\r\n    \"paymentTerminalType\": \"INTERNET_BANKING\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/payout/v1/agents/acme/points/00100/payments/000xxx000",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"payout",
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"00100",
+								"payments",
+								"000xxx000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Некорректный providerCode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Проверка что статус код ответа 4хх\r",
+									"pm.test(\"Статус код 400 или 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);\r",
+									"});\r",
+									"//Проверка что в ответе errorCode = payout.bad.request\r",
+									"const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.have.property('errorCode', 'payout.bad.request');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"recipientDetails\": {\r\n  \"providerCode\": \"sbp-b2k\",\r\n  \"fields\": {\r\n    \"account\": \"79098087755\",\r\n    \"bankId\": \"100000000001\"\r\n  }\r\n},\r\n  \"amount\": {\r\n    \"value\": \"1.00\",\r\n    \"currency\": \"RUB\"\r\n  },\r\n  \"source\": {\r\n    \"paymentType\": \"NO_EXTRA_CHARGE\",\r\n    \"paymentToolType\": \"BANK_ACCOUNT\",\r\n    \"paymentTerminalType\": \"INTERNET_BANKING\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/payout/v1/agents/acme/points/00100/payments/b100-00100-b200",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"payout",
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"00100",
+								"payments",
+								"b100-00100-b200"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Пустой recepientDetails",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Проверка что статус код ответа 4хх\r",
+									"pm.test(\"Статус код 400 или 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);\r",
+									"});\r",
+									"//Проверка что в ответе errorCode = payout.bad.request\r",
+									"const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.have.property('errorCode', 'payout.bad.request');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"recipientDetails\": {},\r\n  \"amount\": {\r\n    \"value\": \"1.00\",\r\n    \"currency\": \"RUB\"\r\n  },\r\n  \"source\": {\r\n    \"paymentType\": \"NO_EXTRA_CHARGE\",\r\n    \"paymentToolType\": \"BANK_ACCOUNT\",\r\n    \"paymentTerminalType\": \"INTERNET_BANKING\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/payout/v1/agents/acme/points/00100/payments/b100-00100-b200",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"payout",
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"00100",
+								"payments",
+								"b100-00100-b200"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Без авторизации",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.have.property('errorCode', 'auth.failed');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"recipientDetails\": {\r\n  \"providerCode\": \"sbp-b2c\",\r\n  \"fields\": {\r\n    \"account\": \"79098087755\",\r\n    \"bankId\": \"100000000001\"\r\n  }\r\n},\r\n  \"amount\": {\r\n    \"value\": \"1.00\",\r\n    \"currency\": \"RUB\"\r\n  },\r\n  \"source\": {\r\n    \"paymentType\": \"NO_EXTRA_CHARGE\",\r\n    \"paymentToolType\": \"BANK_ACCOUNT\",\r\n    \"paymentTerminalType\": \"INTERNET_BANKING\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/payout/v1/agents/acme/points/00100/payments/b100-00100-b200",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"payout",
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"00100",
+								"payments",
+								"b100-00100-b200"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ExecutiePayment",
+			"item": [
+				{
+					"name": "Исполнение платежа",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Статус код 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Ответ содержит обязательные параметры\", function () {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(jsonData).to.have.property(\"paymentId\");\r",
+									"    pm.expect(jsonData).to.have.property(\"creationDateTime\");\r",
+									"    pm.expect(jsonData).to.have.property(\"expirationDatetime\");\r",
+									"    pm.expect(jsonData).to.have.property(\"status\");\r",
+									"    pm.expect(jsonData).to.have.property(\"recipientDetails\");\r",
+									"    pm.expect(jsonData).to.have.property(\"amount\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/payout/v1/agents/acme/points/00100/payments/b100-00100-b200/execute",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"payout",
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"00100",
+								"payments",
+								"b100-00100-b200",
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Некорректный/несуществующий pointId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Проверка что статус код ответа 4хх\r",
+									"pm.test(\"Статус код 400 или 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);\r",
+									"});\r",
+									"//Проверка что в ответе errorCode = payout.point.not-found\r",
+									"const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.have.property('errorCode', 'payout.point.not-found');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/payout/v1/agents/acme/points/000/payments/000x000/execute",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"payout",
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"000",
+								"payments",
+								"000x000",
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Некорректный/несуществующий paymentId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Проверка что статус код ответа 4хх\r",
+									"pm.test(\"Статус код 400 или 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);\r",
+									"});\r",
+									"//Проверка что в ответе errorCode = payout.payment.not-found\r",
+									"const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.have.property('errorCode', 'payout.payment.not-found');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api-test.qiwi.com/partner/payout/v1/agents/acme/points/00100/payments/b100-00100-b200/execute",
+							"protocol": "https",
+							"host": [
+								"api-test",
+								"qiwi",
+								"com"
+							],
+							"path": [
+								"partner",
+								"payout",
+								"v1",
+								"agents",
+								"acme",
+								"points",
+								"00100",
+								"payments",
+								"b100-00100-b200",
+								"execute"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
